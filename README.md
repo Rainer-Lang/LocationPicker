@@ -1,4 +1,4 @@
-# LocationPicker
+# Android LocationPicker
 Simple Android activity for picking a location from google map or from the google place suggestions list.
 Android has created new place picker action intent similar to it I had created a Activity with google map and auto completed place api textview. This activity has a center point with a geo marker and it always takes the location of that point. When i was working on a project I asked to do so. Along with these this activity can receive two parameters that is lat and lon to point on the map.
 
