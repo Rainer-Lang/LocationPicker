@@ -3,6 +3,7 @@ package com.newagesmb_livin.locationpicker;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -40,6 +41,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -50,10 +52,11 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.VisibleRegion;
+
 /**
  * 
  * @author livin
- *
+ * 
  */
 public class LocationPickerActivity extends ActionBarActivity implements
 		OnMapClickListener, OnMapLongClickListener {
@@ -65,7 +68,8 @@ public class LocationPickerActivity extends ActionBarActivity implements
 	private AddressResultReceiver mResultReceiver;
 	ProgressDialog progress_dialogue;
 	public static boolean mMapIsTouched = false;
-	ImageView iv_clear;
+	ImageView iv_clear,iv_marker;
+	TextView tv_label;
 	AutoCompleteTextView autoCompView;
 	public String userLocation = "";
 	ArrayAdapter<String> adapter;
@@ -80,7 +84,7 @@ public class LocationPickerActivity extends ActionBarActivity implements
 
 	}
 
-	//Receives the lat and lon points to in the map
+	// Receives the lat and lon points to in the map
 	public void getData() {
 		double lat = getIntent().getDoubleExtra("lat", 0);
 		double lon = getIntent().getDoubleExtra("lon", 0);
@@ -91,7 +95,7 @@ public class LocationPickerActivity extends ActionBarActivity implements
 		}
 	}
 
-	//Intialises the fields
+	// Initializes the fields
 	public void init() {
 		progress_dialogue = new ProgressDialog(this);
 		mMap = ((SupportMapFragment) getSupportFragmentManager()
@@ -104,7 +108,8 @@ public class LocationPickerActivity extends ActionBarActivity implements
 		gps = new GPSTracker(this);
 
 		iv_clear = (ImageView) findViewById(R.id.iv_clear);
-
+		iv_marker = (ImageView) findViewById(R.id.iv_marker);
+		tv_label = (TextView) findViewById(R.id.tv_label);		
 		autoCompView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
 		adapter = new ArrayAdapter<String>(LocationPickerActivity.this,
 				android.R.layout.simple_list_item_1);
@@ -186,6 +191,39 @@ public class LocationPickerActivity extends ActionBarActivity implements
 	}
 
 	/**
+	 * Method to handle layout clicks
+	 * @param view
+	 */
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.bt_hybrid:
+			// Sets the map type to be "hybrid"
+			mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+			break;
+		case R.id.bt_normal:
+			// Sets the map type to be "normal"
+			mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+			break;
+		case R.id.bt_satelite:
+			// Sets the map type to be "normal"
+			mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+			break;
+		case R.id.iv_marker:
+			// Taped on the custom marker
+			tv_label.setText(userLocation);
+			if (tv_label.isShown()) {
+				tv_label.setVisibility(View.GONE);
+			}else{
+				tv_label.setVisibility(View.VISIBLE);
+			}
+			break;
+			
+		default:
+			break;
+		}
+	}
+
+	/**
 	 * Map points the current user location
 	 */
 	public void showCurrentLocation() {
@@ -260,7 +298,7 @@ public class LocationPickerActivity extends ActionBarActivity implements
 			finish();
 			return true;
 		} else if (item.getItemId() == R.id.action_done) {
-			//Gets the centre point of the map displayed
+			// Gets the centre point of the map displayed
 			VisibleRegion visibleRegion = mMap.getProjection()
 					.getVisibleRegion();
 
@@ -386,10 +424,10 @@ public class LocationPickerActivity extends ActionBarActivity implements
 								userSelectedLatLng.latitude);
 						resultIntent.putExtra(AppConfig.USER_LNG,
 								userSelectedLatLng.longitude);
+						userLocation = convertFromUTF8(zero.getString("formatted_address"));
 						resultIntent.putExtra(AppConfig.USER_LOCATION,
-								zero.getString("formatted_address"));
-						setResult(Activity.RESULT_OK, resultIntent);
-						userLocation = zero.getString("formatted_address");
+								userLocation);
+						setResult(Activity.RESULT_OK, resultIntent);						
 						autoCompView.setText(userLocation);
 						// finish();
 
@@ -418,6 +456,24 @@ public class LocationPickerActivity extends ActionBarActivity implements
 		}
 	}
 
+	
+	/**
+	 * Method to convert string UTF* format
+	 * used @Rainer-Lang
+	 * @param s
+	 * @return
+	 */
+	public static String convertFromUTF8(String s) {
+        String out = null;
+
+        try {
+            out = new String(s.getBytes("ISO-8859-1"), "UTF-8");
+            return out;
+        } catch (UnsupportedEncodingException var3) {
+            return null;
+        }
+    }
+	
 	/**
 	 * Getting google place suggestions
 	 * 
