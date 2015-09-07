@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.newagesmb_livin.locationpicker"
+    package="com.commonusage.locationpicker"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -16,10 +16,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Protect the map component of the application using application signature -->
     <permission
-        android:name="com.newagesmb.freewardz.permission.MAPS_RECEIVE"
+        android:name="com.commonusage.locationpicker.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
     <!-- Allows to receive map -->
-    <uses-permission android:name="com.newagesmb.freewardz.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.commonusage.locationpicker.permission.MAPS_RECEIVE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
