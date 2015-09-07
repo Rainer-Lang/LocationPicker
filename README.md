@@ -18,6 +18,8 @@ Android has created new place picker action intent similar to it I had created a
 							.getStringExtra(AppConfig.USER_LOCATION);			
 		
 	}
+	
+	Don't forget to add your api key for loading google map in the manifest file
 #License
  	Copyright 2015 Livin Lawrence
 
